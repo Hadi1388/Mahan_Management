@@ -21,15 +21,9 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.18" />
 
 		<!-- پکیج‌های باقی‌مانده بدون تغییر -->
-		<PackageReference Include="iTextSharp" Version="5.5.13.4">
-			<NoWarn>NU1701;NU1202</NoWarn>
-		</PackageReference>
 
 		<PackageReference Include="KavenegarDotNetCore" Version="1.0.7" />
 		<PackageReference Include="MD.BootstrapPersianDateTimePicker" Version="2.3.0" />
-		<PackageReference Include="PDFsharp-MigraDoc-GDI" Version="6.2.1">
-			<NoWarn>NU1701;NU1202</NoWarn>
-		</PackageReference>
 		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
 		<PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
 	</ItemGroup>
