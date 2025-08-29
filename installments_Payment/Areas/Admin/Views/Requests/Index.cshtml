@@ -1,0 +1,206 @@
+﻿@using installments_Payment.Core.Enums
+@using installments_Payment.Core.Extensions
+@using static installments_Payment.Core.Enums.RequestStatuses
+@using static installments_Payment.Core.Enums.PaymentTypes
+@model List<installments_Payment.DataAccessLayer.Entities.Requests.Request>
+
+@{
+    ViewData["Title"] = "لیست درخواست‌ها";
+}
+
+<a class="alert btn-gradient-green" asp-action="ApprovedRequests">
+    درخواست های تایید شده
+</a>
+
+<hr class="mb-1" />
+
+@if (TempData["AlertMessage"] != null)
+{
+    var alertType = TempData["AlertType"]?.ToString() ?? "info";
+    <div class="alert alert-@alertType alert-dismissible fade show mt-2 mb-2" role="alert">
+        <button type="button" class="btn-close float-start" data-bs-dismiss="alert" aria-label="Close"></button>
+        @TempData["AlertMessage"]
+    </div>
+    <hr />
+}
+
+<style>
+    th {
+        white-space: nowrap;
+    }
+
+    tr.incomplete {
+        background-color: #fff3cd !important; /* رنگ زرد */
+    }
+
+    tr.complete {
+        background-color: #f8f9fa !important; /* رنگ طوسی روشن */
+    }
+
+    .legend {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+        .legend div {
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .legend .complete {
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+        }
+
+        .legend .incomplete {
+            background-color: #fff3cd;
+            border: 1px solid #ccc;
+        }
+</style>
+
+<div class="legend mt-1 mb-1">
+    <div class="complete">اطلاعات تکمیل شده</div>
+    <div class="incomplete">اطلاعات ناقص</div>
+</div>
+<hr class="mt-0" />
+
+<div class="card shadow mt-2">
+    <div class="card-body p-0 m-0">
+        <div class="table-responsive mt-0 ">
+            @if (Model != null && Model.Any())
+            {
+                <!-- حذف table-striped تا رنگ‌ها override نشه -->
+                <table class="bg-white table-bordered table-sm text-center align-middle">
+                    <thead class="table-success">
+                        <tr class="text-center">
+                            <th>نام</th>
+                            <th>کدملی</th>
+                            <th>شماره تلفن</th>
+                            <th>درمان</th>
+                            <th>نوع</th>
+                            <th>تاریخ شروع</th>
+                            <th>پرداخت</th>
+                            <th>وثیقه</th>
+                            <th class="text-end">مبلغ کل</th>
+                            <th class="text-end">پیش پرداخت</th>
+                            <th class="text-end">نام پزشک</th>
+                            <th>شماره وثیقه</th>
+                            <th class="text-center">تعداد قسط</th>
+                            <th>آپلود</th>
+                            <th>تکمیل</th>
+                            <th>تایید</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            bool isIncomplete =
+                            string.IsNullOrWhiteSpace(item.Treatment?.TreatmentName) ||
+                            string.IsNullOrWhiteSpace(item.TreatmentType?.TreatmentTypeName) ||
+                            !item.StartDate.HasValue ||
+                            !item.PaymentType.HasValue ||
+                            (item.PaymentType != PaymentTypes.Cash && item.GuaranteeType == null) ||
+                            !item.TotalAmount.HasValue ||
+                            !item.Prepayment.HasValue ||
+                            string.IsNullOrWhiteSpace(item.DoctorName);
+
+                            var rowClass = isIncomplete ? "incomplete" : "complete";
+                            <tr class="text-center @rowClass">
+                                <td title="@item.Patient?.FullName">@item.Patient?.FullName</td>
+                                <td>@item.Patient?.NationalCode</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Patient?.PrimaryPhoneNumber))
+                                    {
+                                        @item.Patient.PrimaryPhoneNumber
+                                        @if (!string.IsNullOrEmpty(item.Patient.SecondaryPhoneNumber))
+                                        {
+                                            <br />
+                                            <small class="text-muted">@item.Patient.SecondaryPhoneNumber</small>
+                                        }
+                                    }
+                                </td>
+                                <td title="@item.Treatment?.TreatmentName">@item.Treatment?.TreatmentName</td>
+                                <td>@item.TreatmentType?.TreatmentTypeName</td>
+                                <td>@item.StartDate?.ToPersianDate()</td>
+                                <td>@item.PaymentType?.GetDisplayName()</td>
+                                <td>@(item.PaymentType == PaymentTypes.Cash ? "نقدی" : item.GuaranteeType?.GetDisplayName())</td>
+                                <td class="text-center"><small>@item.TotalAmount?.ToSeparatedNumber()</small></td>
+                                <td class="text-center"><small>@item.Prepayment?.ToSeparatedNumber()</small></td>
+                                <td class="text-center"><small>@item.DoctorName</small></td>
+                                <td>
+                                    @if (item.GuaranteeFiles != null && item.GuaranteeFiles.Any())
+                                    {
+                                        <ul>
+                                            @foreach (var file in item.GuaranteeFiles)
+                                            {
+                                                <li><small>@file.GuaranteeNumber</small></li>
+                                            }
+                                        </ul>
+                                    }
+                                    else if (item.PaymentType == PaymentTypes.Cash)
+                                    {
+                                        <span>نقدی</span>
+                                    }
+                                    else
+                                    {
+                                        <span>وارد نشده</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @(item.PaymentType == PaymentTypes.Cash ? "نقدی" : item.InstallmentsCount.ToString())
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a asp-area="Admin" asp-controller="RequestGuaranteeFiles" asp-action="Create" asp-route-requestId="@item.RequestId"
+                                           class="bg-gradient-to-r from-green-primary to-green-dark text-white px-1 py-0.5 rounded-full font-medium hover:opacity-90 transitionn" title="آپلود وثیقه">
+                                            <i class="fas fa-upload" style="font-size: 0.8rem;"></i>
+                                        </a>
+                                        <a asp-area="Admin" asp-controller="RequestGuaranteeFiles" asp-action="Index" asp-route-requestId="@item.RequestId"
+                                           class="bg-gradient-to-r from-green-primary to-green-dark text-white px-1 py-0.5 rounded-full font-medium hover:opacity-90 transitionn" title="مشاهده وثیقه">
+                                            <i class="fas fa-eye" style="font-size: 0.8rem;"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a asp-area="Admin" asp-controller="Requests" asp-action="CompleteRequest" asp-route-id="@item.RequestId" class="btn-gradient-yellow text-black px-1 py-0.5">
+                                        <i class="fas fa-pen" style="font-size: 0.8rem;"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <form asp-area="Admin" asp-controller="Requests" asp-action="Approve" method="post" style="display:inline;">
+                                            <input type="hidden" name="id" value="@item.RequestId" />
+                                            <button type="submit" class="btn-gradient-green px-1 py-0.5" title="تایید درخواست">
+                                                <i class="fas fa-check" style="font-size: 0.8rem;"></i>
+                                            </button>
+                                        </form>
+                                        <form asp-area="Admin" asp-controller="Requests" asp-action="Reject" method="post" style="display:inline;" onsubmit="return confirm('آیا مطمئن هستید که می‌خواهید این درخواست را حذف کنید؟');">
+                                            <input type="hidden" name="id" value="@item.RequestId" />
+                                            <button type="submit" class="btn-gradient-red px-1 py-0.5" title="رد درخواست">
+                                                <i class="fas fa-close" style="font-size: 0.8rem;"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert btn-gradient-yellow text-center text-black-50 rounded-2 mt-2">
+                    درخواستی با وضعیت «در انتظار» وجود ندارد
+                    <hr class="my-2" />
+                    <ul>
+                        <li>⦿ درخواست های تاییدی از این لیست حذف و به لیست تایید شده منتقل میشوند</li>
+                        <li class="my-2">⦿ برای مشاهده درخواست های تایید شده به لیست درخواست های تایید شده مراجعه کنید</li>
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</div>

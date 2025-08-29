@@ -1,0 +1,67 @@
+﻿@using installments_Payment.Core.Extensions
+@model List<installments_Payment.DataAccessLayer.Entities.Installments.Installment>
+
+@{
+    ViewData["Title"] = "تاریخچه پرداخت‌ها";
+}
+
+@if (!Model.Any())
+{
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="bg-yellow-100 border border-red-400 text-yellow-700 px-4 py-3 rounded shadow-sm text-center mb-1">
+                هنوز هیچ پرداختی انجام نشده اَست.
+            </div>
+        </div>
+    </div>
+}
+
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table shadow-sm table-bordered table-striped table-hover text-center align-middle">
+                    <thead class="table-success">
+                        <tr>
+                            <th>شماره</th>
+                            <th>درمان</th>
+                            <th>قسط شماره</th>
+                            <th>مبلغ</th>
+                            <th>تاریخ سررسید</th>
+                            <th>تاریخ پرداخت</th>
+                            <th>مبلغ پرداخت شده</th>
+                            <th>جریمه</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            var installment = Model[i];
+                            <tr class="text-center">
+                                <td>@installment.InstallmentId</td>
+                                <td>@installment.Request.Treatment?.TreatmentName</td>
+                                <td>@(i + 1)</td>
+                                <td>@installment.Amount?.ToString("N0") تومان</td>
+                                <td>@installment.DueDate?.ToPersianDate()</td>
+                                <td>@installment.PaymentDate?.ToPersianDate()</td>
+                                <td>@installment.PaidAmount?.ToString("N0") تومان</td>
+                                <td>
+                                    @if (@installment.PenaltyAmount != null)
+                                    {
+                                        @installment.PenaltyAmount?.ToString("N0")
+                                    }
+
+                                    else
+                                    {
+                                        <p class="badge bg-success">جریمه شامل نشده</p>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,59 @@
+﻿@using installments_Payment.Core.Enums
+@using installments_Payment.Core.Extensions
+@model List<installments_Payment.DataAccessLayer.Entities.Requests.Request>
+
+@{
+    ViewData["Title"] = "درخواست‌های در حال انتظار";
+}
+
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="card-body">
+            <div class="bg-yellow-100 border border-red-400 text-yellow-700 px-4 py-3 rounded shadow-sm mb-1">
+                هیچ درخواست در حال انتظاری وجود ندارد.
+            </div>
+        </div>
+    </div>
+}
+
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <div class="bg-yellow-100 border border-red-400 text-yellow-700 px-4 py-3 rounded shadow-sm mb-1">
+                مراجعه کننده محترم، درخواست های شما در حال بررسی توسط  مدیریت هستند، از خالی بودن مقادیر تعجب نکنید.
+            </div>
+            <hr class="my-2" />
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover text-center align-middle">
+                    <thead class="table-success">
+                        <tr>
+                            <th>شماره درخواست</th>
+                            <th>نام درمان</th>
+                            <th>تاریخ شروع</th>
+                            <th>نوع پرداخت</th>
+                            <th>مبلغ کل</th>
+                            <th>پیش پرداخت</th>
+                            <th>وضعیت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var request in Model)
+                        {
+                            <tr>
+                                <td>@request.RequestId</td>
+                                <td>@(request.Treatment?.TreatmentName ?? "-")</td>
+                                <td>@(request.StartDate.HasValue ? request.StartDate.Value.ToPersianDate() : "-")</td>
+                                <td>@(request.PaymentType?.GetDisplayName() ?? "-")</td>
+                                <td>@(request.TotalAmount.HasValue ? request.TotalAmount.Value.ToString("N0") + " تومان" : "-")</td>
+                                <td>@(request.Prepayment.HasValue ? request.Prepayment.Value.ToString("N0") + " تومان" : "-")</td>
+                                <td class="bg-warning">در انتظار تایید</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}

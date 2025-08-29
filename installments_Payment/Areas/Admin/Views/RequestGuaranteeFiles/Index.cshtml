@@ -1,0 +1,52 @@
+﻿@model IEnumerable<installments_Payment.DataAccessLayer.Entities.Requests.RequestGuaranteeFile>
+
+@{
+    ViewData["Title"] = "وثیقه‌های درخواست " + @ViewBag.PatientName;
+    var requestId = ViewBag.RequestId as int? ?? 0;
+}
+
+<a asp-action="Create" asp-route-requestId="@ViewBag.RequestId" class="bg-gradient-to-r from-green-primary to-green-dark text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transitionn">افزودن وثیقه جدید</a>
+
+<hr class="mt-3" />
+
+<div class="card mt-2">
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <table class="table table-bordered table-striped mt-2">
+                <thead class="table-success">
+                    <tr>
+                        <th>شماره چک یا سفته</th>
+                        <th>فایل</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.GuaranteeNumber</td>
+                            <td><a href="@item.FilePath" target="_blank">مشاهده فایل</a></td>
+                            <td>
+                                <form asp-action="Delete" method="post" style="display:inline">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit" class="btn btn-gradient-red btn-sm" onclick="return confirm('آیا مطمئن هستید؟')">حذف</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        else
+        {
+            <div class="alert btn-gradient-yellow text-center text-black-50 rounded-2 mt-3">
+                وثیقه ای برای نمایش وجود ندارد
+            </div>
+        }
+    </div>
+</div>
+
+<hr class="mb-3" />
+<a asp-controller="Requests" asp-action="Index" class="btn-gradient-gray">بازگشت به درخواست‌ها</a>

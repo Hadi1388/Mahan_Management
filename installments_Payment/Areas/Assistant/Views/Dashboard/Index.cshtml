@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "داشبورد دستیار";
+}
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 mb-6 lg:mb-8">
+
+    <!-- جدول زمانی بیماران -->
+    <div class="bg-white rounded-xl shadow-sm p-4 lg:p-6 border border-yellow-primary/20 card-hover">
+        <div class="flex items-center justify-center">
+            <div class="text-center">
+                <p class="text-gray text-center text-xs lg:text-sm">جدول زمانی بیماران؛ مشاهده برنامه مراجعه بیماران به کلینیک</p>
+                <hr class="my-2" />
+                <a asp-controller="TreatmentProcesses" asp-action="List" class="btn shadow-md btn-gradient-yellow text-black-50 px-4 py-2 rounded-full font-medium hover:opacity-90 transitionn">
+                    مشاهده
+                    <span>
+                        <i class="fas fa-clock"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ثبت سفارش -->
+    <div class="bg-white rounded-xl shadow-sm p-4 lg:p-6 border border-green-primary/20 card-hover">
+        <div class="flex items-center justify-center">
+            <div class="text-center">
+                <p class="text-gray text-center text-xs lg:text-sm">ثبت سفارش؛ درخواست کالا هایی که به آن ها نیاز دارید</p>
+                <hr class="my-2" />
+                <a asp-controller="Requirements" asp-action="Index" class="btn shadow-md btn-gradient-green text-black-50 px-4 py-2 rounded-full font-medium hover:opacity-90 transitionn">
+                    مشاهده
+                    <span>
+                        <i class="fas fa-shopping-cart"></i>
+                    </span>
+                </a>
+            </div>
+@*             <div class="bg-green-500/20 p-3 lg:p-4 rounded-full">
+                <i class="fas fa-shopping-cart text-green-400 text-lg lg:text-xl"></i>
+            </div> *@
+        </div>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+﻿@using installments_Payment.Core.Extensions
+@using static installments_Payment.Areas.PatientPanel.Controllers.TreatmentsController
+@model TreatmentInstallmentsViewModel
+
+@{
+    ViewData["Title"] = "پرداخت اقساط درمان " + @Model.Request.Treatment.TreatmentName;
+    bool firstUnpaidFound = false; // برای شناسایی اولین قسط پرداخت نشده
+}
+
+<div class="row g-3">
+    <div class="card">
+        <div class="card-body">
+            <div class="bg-green-100 border border-red-400 text-green-700 px-4 py-3 rounded shadow-sm mb-1">
+                توجه داشته باشید که اقساط به ترتیب پرداخت میشوند
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    @for (int i = 0; i < Model.Installments.Count; i++)
+    {
+        var installment = Model.Installments[i];
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card shadow border-0 @(installment.Paid ? "border-success" : "border-danger")">
+                <div class="card-header @(installment.Paid ? "btn-gradient-green text-white" : "btn-gradient-red text-white") d-flex justify-content-between align-items-center">
+                    <span> <i class="fas fa-plus"></i> قسط شماره @(@i + 1)</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">مبلغ: @installment.Amount?.ToString("N0") تومان</p>
+                    <p class="card-text">تاریخ سررسید: @installment.DueDate?.ToPersianDate()</p>
+                    <p class="card-text">
+                        وضعیت: <span class="@(installment.Paid ? "text-success" : "text-danger")">
+                            @(installment.Paid ? "پرداخت شده" : "پرداخت نشده")
+                        </span>
+                    </p>
+
+                    @if (!installment.Paid)
+                    {
+                        bool enableButton = !firstUnpaidFound;
+                        if (enableButton) firstUnpaidFound = true;
+
+                        <form asp-area="PatientPanel" asp-controller="Payments" asp-action="PayInstallment" method="post">
+                            <input type="hidden" name="installmentId" value="@installment.InstallmentId" />
+                            <hr />
+                            <div class="d-flex justify-content-center mt-2">
+                                <button type="submit" class="btn btn-gradient-blue text-white w-50 mx-1" @(enableButton ? "" : "disabled")>
+                                    پرداخت این قسط
+                                </button>
+                                <a asp-area="PatientPanel" asp-controller="Payments" asp-action="PaymentHistory" asp-route-installmentId="@installment.InstallmentId" class="btn btn-gradient-purple text-white w-50 small">
+                                    سابقه پرداخت
+                                </a>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <hr />
+                        <div class="d-flex justify-content-center mt-2">
+                            <a asp-area="PatientPanel" asp-controller="Payments" asp-action="PaymentHistory" asp-route-installmentId="@installment.InstallmentId" class="btn btn-gradient-yellow text-white w-100 small">
+                                سابقه پرداخت
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

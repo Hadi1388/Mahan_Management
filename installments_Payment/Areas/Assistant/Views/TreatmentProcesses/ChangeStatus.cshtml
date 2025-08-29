@@ -1,0 +1,37 @@
+﻿@model TreatmentProcessUpdateViewModel
+@using installments_Payment.Core.Enums
+@using installments_Payment.Core.ViewModels.Treatment
+
+@{
+    ViewData["Title"] = "تغییر وضعیت درمان";
+}
+
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="ChangeStatus" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="TreatmentProcessId" />
+
+                <div class="mb-3">
+                    <label asp-for="TreatmentStatus" class="form-label"></label>
+                    <select asp-for="TreatmentStatus" class="form-select"
+                            asp-items="Html.GetEnumSelectList<TreatmentStatuses>()">
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ProcessStatus" class="form-label"></label>
+                    <select asp-for="ProcessStatus" class="form-select"
+                            asp-items="Html.GetEnumSelectList<ProcessStatuses>()">
+                    </select>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-end mt-2">
+                    <button type="submit" class="btn-gradient-green mx-1 px-1 py-0.5">ذخیره تغییرات</button>
+                    <a asp-action="Index" class="btn btn-gradient-gray">بازگشت</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

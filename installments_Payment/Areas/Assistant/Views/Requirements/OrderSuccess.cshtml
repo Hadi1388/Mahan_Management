@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "وضعیت سفارش";
+    int orderId = ViewBag.OrderId != null ? (int)ViewBag.OrderId : 0;
+}
+
+<div class="container">
+    @if (orderId > 0)
+    {
+        <div class="alert btn-gradient-green rounded-2 text-center text-black-50 py-3 w-100">
+            <h4>درخواست سفارش شما با موفقیت ثبت شد</h4>
+            <hr class="my-2" />
+            <ul>
+                <li>⦿ دستیار عزیز، درخواست سفارش شما با موفقیت برای مدیر ارسال شد</li>
+                <li class="my-2">⦿ از لینک زیر لیست سفارش را به صورت فایل پی دی اف دانلود کنید</li>
+            </ul>
+            <hr class="text-black-50" />
+            <button type="button" class="btn btn-gradient-white text-dark mt-3 w-25" data-bs-toggle="modal" data-bs-target="#pdfModal">
+                دانلود PDF
+            </button>
+            <br />
+            <a class="btn btn-gradient-white text-dark my-2 w-25" asp-action="Index">
+                لیست سفارشات
+            </a>
+        </div>
+    }
+
+    else
+    {
+        <div class="alert btn-gradient-yellow rounded-2 text-center text-black-50 py-3 w-100">
+            <h4>ساخت فایل پی دی اف با مشکل مواجه شد</h4>
+            <hr class="my-2" />
+            <ul>
+                <li>⦿ دستیار عزیز، ساخت پی دی اف برای درخواست شما مشکل سیستمی دارد</li>
+                <li class="my-2">⦿ اَز دستکاری url و وارد کردن دستی آدرس خودداری کنید و دوباره به صفحه ثبت سفارش مراجعه کنید</li>
+                <li class="text-black my-2">⦿ اگر صفحه را رفرش کردید و با این صفحه مواجه شدید به لیست سفارشات برگردید و فایل را اَز آنجا دانلود کنید</li>
+            </ul>
+            <hr class="text-black-50" />
+            <a class="btn btn-gradient-white text-dark mt-3 w-25" asp-action="Index">
+                لیست سفارشات
+            </a>
+        </div>
+
+    }
+
+    <!-- Modal -->
+    <div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3">
+                <div class="modal-body">
+                    <p>فایل PDF سفارش آماده است، برای دانلود روی دکمه زیر کلیک کنید</p>
+                </div>
+                <div class="modal-footer">
+                    @if (orderId > 0)
+                    {
+                        <a href="@Url.Action("DownloadOrderPdf", "Requirements", new { area = "Assistant", id = orderId })"
+                           class="bg-gradient-to-r from-green-primary to-green-dark text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transition"
+                           id="downloadPdfBtn">
+                            دانلود
+                        </a>
+                    }
+                    <button type="button" class="btn btn-gradient-gray text-white" data-bs-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var downloadBtn = document.getElementById("downloadPdfBtn");
+            if (downloadBtn) {
+                downloadBtn.addEventListener("click", function() {
+                    var pdfModalEl = document.getElementById("pdfModal");
+                    var modal = bootstrap.Modal.getInstance(pdfModalEl);
+                    if (modal) {
+                        modal.hide();
+                    }
+
+                    setTimeout(function () {
+                        window.location.href = '@Url.Action("Index", "Requirements", new { area = "Assistant" })';
+                    }, 800);
+                });
+            }
+        });
+
+    </script>
+    }

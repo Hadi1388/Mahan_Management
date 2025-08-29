@@ -1,0 +1,227 @@
+@using installments_Payment.Core.ViewModels.Request
+@model RequestCompleteViewModel
+
+@{
+    ViewData["Title"] = "تکمیل درخواست";
+    var treatmentTypes = (SelectList)ViewData["TreatmentTypes"];
+    var treatments = (SelectList)ViewData["Treatments"];
+}
+
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="CompleteRequest" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="RequestId" />
+                <input type="hidden" asp-for="FullName" />
+                <input type="hidden" asp-for="NationalCode" />
+                <input type="hidden" asp-for="PrimaryPhoneNumber" />
+                <input type="hidden" asp-for="SecondaryPhoneNumber" />
+                <input type="hidden" asp-for="NationalCardImagePath" />
+                <input type="hidden" asp-for="Address" />
+
+                <fieldset class="border p-3 mb-3">
+                    <legend>اطلاعات بیمار</legend>
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label"></label>: <span class="text-primary">@Model.FullName</span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NationalCardImagePath" class="form-label"></label>: <a href="@Model.NationalCardImagePath" class="text-primary">مشاهده</a>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NationalCode" class="form-label"></label>: <span class="text-primary">@Model.NationalCode</span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="PrimaryPhoneNumber" class="form-label"></label>: <span class="text-primary">@Model.PrimaryPhoneNumber</span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SecondaryPhoneNumber" class="form-label"></label>: <span class="text-primary">@Model.SecondaryPhoneNumber</span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label"></label>: <span class="text-primary">@Model.Address</span>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-3 mb-3">
+                    <legend>تکمیل اطلاعات درخواست</legend>
+
+                    <div class="mb-3">
+                        <label asp-for="TreatmentTypeId"></label>
+                        <select asp-for="TreatmentTypeId" asp-items="treatmentTypes" class="form-control"></select>
+                        <span asp-validation-for="TreatmentTypeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="TreatmentId"></label>
+                        <select asp-for="TreatmentId" asp-items="treatments" class="form-control"></select>
+                        <span asp-validation-for="TreatmentId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">تاریخ شروع درمان</label>
+                        <div class="input-group">
+                            <span id="StartDatePicker" class="input-group-text cursor-pointer">📅</span>
+                            <input type="text" id="StartDateInput" placeholder="تاریخ درمان" data-name="start-date-text" class="form-control" />
+                            <input type="hidden" data-name="start-date-value" name="StartDate" />
+                        </div>
+                        <div id="StartDateError" class="text-danger"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PaymentType" class="form-label"></label>
+                        <select asp-for="PaymentType" id="PaymentType" class="form-select"
+                                asp-items="Html.GetEnumSelectList<installments_Payment.Core.Enums.PaymentTypes>()">
+                            <option value="">انتخاب کنید</option>
+                        </select>
+                        <span asp-validation-for="PaymentType" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label asp-for="GuaranteeType" class="form-label"></label>
+                        <select asp-for="GuaranteeType" id="guarntee-type" class="form-select" asp-items="Html.GetEnumSelectList<installments_Payment.Core.Enums.GuaranteeTypes>()">
+                            <option value="">انتخاب کنید</option>
+                        </select>
+                        <span asp-validation-for="GuaranteeType" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DoctorName" class="form-label"></label>
+                        <input asp-for="DoctorName" class="form-control" />
+                        <span asp-validation-for="DoctorName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="TotalAmount" class="form-label"></label>
+                        <input asp-for="TotalAmount" id="TotalAmount" min="0" step="1" class="form-control" />
+                        <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Prepayment" class="form-label"></label>
+                        <input asp-for="Prepayment" id="PrePayment" min="0" step="1" class="form-control" />
+                        <span asp-validation-for="Prepayment" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="InstallmentsCount" class="form-label"></label>
+                        <input asp-for="InstallmentsCount" class="form-control" id="installmentsCount" />
+                        <span asp-validation-for="InstallmentsCount" class="text-danger"></span>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-3 mb-3" id="checkNumber">
+                    <legend>فایل‌ها و شماره‌های وثیقه</legend>
+                    <div id="guarantee-section">
+                        <div class="row mb-2 guarantee-item">
+                            <div class="col-md-6">
+                                <label>فایل وثیقه</label>
+                                <input type="file" name="GuaranteeFiles" class="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label>شماره وثیقه</label>
+                                <input type="text" name="GuaranteeNumbers[0]" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <button type="button" class="btn-gradient-green mt-2" id="add-guarantee">افزودن وثیقه جدید</button>
+                </fieldset>
+
+                <div class="d-flex justify-content-end mt-2">
+                    <button type="submit" class="bg-gradient-to-r from-green-primary to-green-dark text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transitionn mx-1">ثبت</button>
+                    <a asp-action="Index" class="btn-gradient-gray">انصراف</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.querySelector("form").addEventListener("submit", function (e) {
+            let startDateInput = document.getElementById("StartDateInput");
+            let errorDiv = document.getElementById("StartDateError");
+
+            errorDiv.textContent = ""; // پاک کردن خطای قبلی
+
+            if (startDateInput.value.trim() === "") {
+                e.preventDefault();
+
+                // نمایش متن خطا
+                errorDiv.textContent = "لطفا تاریخ شروع درمان را وارد کنید.";
+
+                // اسکرول به محل خطا (کمی بالاتر)
+                const yOffset = -100; // چقدر بالاتر بره
+                const y = startDateInput.getBoundingClientRect().top + window.scrollY + yOffset;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        });
+
+
+
+        const startDatePicker = new mds.MdsPersianDateTimePicker(document.getElementById('StartDatePicker'), {
+            targetTextSelector: '[data-name="start-date-text"]',
+            targetDateSelector: '[data-name="start-date-value"]',
+            enableTimePicker: true,           // اینجا فعال شدن ساعت
+            textFormat: 'yyyy/MM/dd HH:mm',   // نمایش در input
+            dateFormat: 'yyyy-MM-dd HH:mm'    // ارسال به hidden و مدل
+        });
+
+        function toggleFieldsBasedOnPaymentType() {
+            var paymentType = document.getElementById("PaymentType").value;
+            var isCash = paymentType === "2"; // اینجا مقدار enum نقدی
+
+            // اقساط
+            var installmentsCount = document.getElementById("installmentsCount");
+            installmentsCount.disabled = isCash;
+            if (isCash) installmentsCount.value = "";
+
+            // نوع وثیقه
+            var guaranteeType = document.getElementById("guarntee-type");
+            guaranteeType.disabled = isCash;
+            if (isCash) guaranteeType.value = "";
+
+            // دکمه افزودن ضمانت
+            document.getElementById("add-guarantee").disabled = isCash;
+
+            // همه ورودی‌های بخش ضمانت (شماره و فایل)
+            document.querySelectorAll("#checkNumber input").forEach(function (el) {
+                el.disabled = isCash;
+                if (isCash) {
+                    if (el.type === "file") {
+                        el.value = null; // فایل رو پاک می‌کنه
+                    } else {
+                        el.value = ""; // متن رو پاک می‌کنه
+                    }
+                }
+            });
+        }
+
+        // رویداد تغییر نوع پرداخت
+        document.getElementById("PaymentType").addEventListener("change", toggleFieldsBasedOnPaymentType);
+
+        // اجرای اولیه
+        toggleFieldsBasedOnPaymentType();
+
+        let count = 1; // چون یک جفت اول هست
+        document.getElementById('add-guarantee').addEventListener('click', function () {
+            var container = document.getElementById('guarantee-section');
+            var html = `
+                <div class="row mb-2 guarantee-item">
+                    <div class="col-md-6">
+                        <label>فایل وثیقه</label>
+                        <input type="file" name="GuaranteeFiles" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>شماره وثیقه</label>
+                        <input type="text" name="GuaranteeNumbers[${count}]" class="form-control" />
+                    </div>
+                </div>`;
+            container.insertAdjacentHTML('beforeend', html);
+            count++;
+        });
+    </script>
+            }

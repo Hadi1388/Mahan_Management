@@ -1,0 +1,105 @@
+@using installments_Payment.Core.Enums
+@using installments_Payment.Core.Extensions
+@using static installments_Payment.Core.Enums.PaymentTypes
+@model List<installments_Payment.DataAccessLayer.Entities.Requests.Request>
+
+@{
+    ViewData["Title"] = "لیست درخواست‌های تایید شده";
+}
+
+@if (TempData["AlertMessage"] != null)
+{
+    var alertType = TempData["AlertType"]?.ToString() ?? "info";
+    <div class="alert alert-@alertType alert-dismissible fade show mt-2 mb-2" role="alert">
+        <button type="button" class="btn-close float-start" data-bs-dismiss="alert" aria-label="Close"></button>
+        @TempData["AlertMessage"]
+    </div>
+}
+
+@if (Model.Any())
+{
+    <table class="table shadow table-bordered table-striped shadow text-center">
+        <thead class="table-success">
+            <tr>
+                <th>نام</th>
+                <th>کدملی</th>
+                <th>شماره تلفن</th>
+                <th>درمان</th>
+                <th>نوع</th>
+                <th>تاریخ شروع</th>
+                <th>پرداخت</th>
+                <th>وثیقه</th>
+                <th>مبلغ کل</th>
+                <th>پیش پرداخت</th>
+                <th>نام پزشک</th>
+                <th>شماره وثیقه</th>
+                <th>تعداد قسط</th>
+                <th>مدیریت اقساط</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-truncate" style="max-width: 120px;" title="@item.Patient?.FullName">@item.Patient?.FullName</td>
+                    <td>@item.Patient?.NationalCode</td>
+                    <td style="white-space: nowrap;">
+                        @item.Patient?.PrimaryPhoneNumber
+                        @if (!string.IsNullOrEmpty(item.Patient?.SecondaryPhoneNumber))
+                        {
+                            <br />
+                            <small class="text-muted">@item.Patient.SecondaryPhoneNumber</small>
+                        }
+                    </td>
+                    <td class="text-truncate" style="max-width: 120px;" title="@item.Treatment?.TreatmentName">@item.Treatment?.TreatmentName</td>
+                    <td>@item.TreatmentType?.TreatmentTypeName</td>
+                    <td>@item.StartDate?.ToPersianDate()</td>
+                    <td>@item.PaymentType.GetDisplayName()</td>
+                    <td>
+                        @if (item.PaymentType == PaymentTypes.Cash)
+                        {
+                            <span>نقدی</span>
+                        }
+                        else
+                        {
+                            <span>@item.GuaranteeType.GetDisplayName()</span>
+                        }
+                    </td>
+                    <td class="text-end"><small>@item.TotalAmount?.ToSeparatedNumber()</small></td>
+                    <td class="text-end"><small>@item.Prepayment?.ToSeparatedNumber()</small></td>
+                    <td class="text-end"><small>@item.DoctorName</small></td>
+                    <td>
+                        @if (item.GuaranteeFiles != null && item.GuaranteeFiles.Any())
+                        {
+                            <ul class="p-0 m-0 list-unstyled">
+                                @foreach (var file in item.GuaranteeFiles)
+                                {
+                                    <li><small>@file.GuaranteeNumber</small></li>
+                                }
+                            </ul>
+                        }
+                        else if (item.PaymentType == PaymentTypes.Cash)
+                        {
+                            <span>نقدی</span>
+                        }
+                        else
+                        {
+                            <span>وارد نشده</span>
+                        }
+                    </td>
+                    <td>@(item.PaymentType == PaymentTypes.Cash ? "نقدی" : item.InstallmentsCount.ToString())</td>
+                    <td>
+                        <a class="btn btn-gradient-yellow text-dark">مشاهده</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+else
+{
+    <div class="alert btn-gradient-yellow text-center text-black-50 rounded-2 mt-2">
+        درخواستی با وضعیت «تایید شده» وجود ندارد
+    </div>
+}

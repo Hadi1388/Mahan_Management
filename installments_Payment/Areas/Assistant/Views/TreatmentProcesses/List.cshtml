@@ -1,0 +1,125 @@
+﻿@using installments_Payment.Core.Enums
+@using installments_Payment.Core.Extensions
+@using installments_Payment.DataAccessLayer.Entities.Treatments
+@using static installments_Payment.Core.Enums.ProcessStatuses
+@using static installments_Payment.Core.Enums.TreatmentStatuses
+@model List<TreatmentProcess>
+@{
+    ViewData["Title"] = "لیست پروسه‌ های درمان";
+}
+
+<style>
+    #PatientCard:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        transition: all 0.5s ease;
+    }
+</style>
+
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="get" asp-action="List" asp-controller="TreatmentProcesses" class="d-flex gap-2 align-items-center">
+                <div class="input-group">
+                    <span id="dtp1" class="input-group-text cursor-pointer">📅</span>
+
+                    <!-- داره name و مقدار اولیه -->
+                    <input type="text" name="shamsiDate" placeholder="تاریخ"
+                           data-name="dtp1-text"
+                           class="form-control text-center"
+                           value="@ViewBag.ShamsiDate" />
+
+                    <input type="hidden" id="gregorianDate" name="gregorianDate"
+                           value="@ViewBag.SelectedDate?.ToString("yyyy-MM-dd")"
+                           data-name="dtp1-date" />
+                </div>
+
+
+                <button type="submit" class="btn-sm small btn-gradient-blue rounded-3">نمایش</button>
+            </form>
+        </div>
+    </div>
+
+    <hr class="my-2" />
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-3">
+            @foreach (var tp in Model)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card shadow border-0" id="PatientCard">
+                        <div class="card-header btn-gradient-green shadow-sm ext-white d-flex align-items-center">
+                            <i class="fas fa-user me-2"></i> @tp.PatientName
+                        </div>
+                        <div class="card-body">
+                            <p><strong>نام پزشک:</strong> @tp.DoctorName</p>
+                            <p><strong>تاریخ شروع:</strong> <span class="text-primary fw-bold">@tp.StartDate?.ToString("HH:mm")</span></p>
+                            <p>
+                                <strong>وضعیت درمان:</strong>
+                                @switch (tp.TreatmentStatus)
+                                {
+                                    case TreatmentStatuses.InProgress:
+                                        <span class="badge bg-warning text-dark">ادامه درمان</span>
+                                        break;
+                                    case TreatmentStatuses.Completed:
+                                        <span class="badge bg-success">پایان درمان</span>
+                                        break;
+                                    case TreatmentStatuses.Examination:
+                                        <span class="badge bg-info">معاینه</span>
+                                        break;
+                                }
+                            </p>
+                            <p>
+                                <strong>وضعیت انجام:</strong>
+                                @switch (tp.ProcessStatus)
+                                {
+                                    case ProcessStatuses.NotEntered:
+                                        <span class="badge bg-warning text-dark">وارد نشده</span>
+                                        break;
+                                    case ProcessStatuses.Done:
+                                        <span class="badge bg-success">انجام شده</span>
+                                        break;
+                                    case ProcessStatuses.Canceled:
+                                        <span class="badge bg-danger">لغو شده</span>
+                                        break;
+                                }
+                            </p>
+                            <hr class="my-2" />
+                            <a asp-action="ChangeStatus" asp-route-id="@tp.TreatmentProcessId" class="btn btn-sm small w-100 btn-gradient-purple text-white">تغییر وضعیت</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert btn-gradient-yellow text-black-50 text-center rounded-2 mt-2 p-3">
+            هیچ پروسه درمانی برای این تاریخ وجود ندارد
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+                const dtp1Instance = new mds.MdsPersianDateTimePicker(document.getElementById('dtp1'), {
+            targetTextSelector: '[data-name="dtp1-text"]',
+            targetDateSelector: '[data-name="dtp1-date"]',
+            enableTimePicker: false,
+            disableBeforeToday: false,
+            dateFormat: 'yyyy/MM/dd',
+                        onDateChange: function (e) {
+                document.getElementById("shamsiDate").value = e.dateString;
+            }
+        });
+
+        // وقتی صفحه بارگیری شد، hidden رو با مقدار input پر کن
+        document.addEventListener("DOMContentLoaded", function () {
+            let shamsiInput = document.querySelector('[data-name="dtp1-text"]');
+            if (shamsiInput && shamsiInput.value) {
+                document.getElementById("shamsiDate").value = shamsiInput.value;
+            }
+        });
+    </script>
+}

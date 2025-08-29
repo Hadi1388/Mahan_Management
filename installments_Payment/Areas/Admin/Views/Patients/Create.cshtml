@@ -1,0 +1,83 @@
+﻿@model installments_Payment.DataAccessLayer.Entities.Users.Patient
+
+@{
+    ViewData["Title"] = "افزودن بیمار جدید";
+}
+
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Create" method="post" enctype="multipart/form-data" novalidate>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PrimaryPhoneNumber" class="form-label"></label>
+                    <input asp-for="PrimaryPhoneNumber" class="form-control" />
+                    <span asp-validation-for="PrimaryPhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SecondaryPhoneNumber" class="form-label"></label>
+                    <input asp-for="SecondaryPhoneNumber" class="form-control" />
+                    <span asp-validation-for="SecondaryPhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NationalCode" class="form-label"></label>
+                    <input asp-for="NationalCode" class="form-control" />
+                    <span asp-validation-for="NationalCode" class="text-danger"></span>
+                </div>
+
+@*                 <div class="mb-3">
+                    <label asp-for="CheckOrPromissoryNoteImagePath" class="form-label"></label>
+                    <input asp-for="CheckOrPromissoryNoteImagePath" class="form-control" />
+                    <span asp-validation-for="CheckOrPromissoryNoteImagePath" class="text-danger"></span>
+                </div> *@
+
+                <div class="mb-3">
+                    <label for="NationalCardImageFile" class="form-label">تصویر کارت ملی</label>
+                    <input type="file" name="NationalCardImageFile" class="form-control" />
+                    <span asp-validation-for="NationalCardImagePath" class="text-danger"></span>
+                </div>
+
+
+                <div class="mb-3">
+                    <label asp-for="Address" class="form-label"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" type="password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+@*                 <div class="form-check alert alert-success mb-3">
+                    <input asp-for="IsPhoneVerified" class="form-check-input mx-3" />
+                    <label class="form-check-label">شماره موبایل تایید شده؟</label>
+                </div> *@
+
+                <hr />
+                <!-- بقیه فیلدهای سیستمی را معمولاً مدیر نباید تغییر بده، پس بهتر است آنها را نمایش ندهید یا فقط در مشاهده بگذارید -->
+
+                <div class="d-flex justify-content-end mt-2">
+                    <button type="submit" class="bg-gradient-to-r from-green-primary to-green-dark text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transitionn">ثبت بیمار</button>
+                    <a asp-action="Index" class="btn-gradient-gray ms-0 mx-1">بازگشت</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

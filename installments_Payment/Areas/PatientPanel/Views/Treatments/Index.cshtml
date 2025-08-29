@@ -1,0 +1,44 @@
+﻿@using installments_Payment.Core.Enums
+@using installments_Payment.Core.Extensions
+@model List<installments_Payment.DataAccessLayer.Entities.Requests.Request>
+
+@{
+    ViewData["Title"] = "درمان های جاری";
+}
+<div class="container">
+    <div class="card mt-2">
+        <div class="card-body">
+            <table class="table table-bordered table-striped shadow">
+                <thead class="table-success">
+                    <tr class="text-center">
+                        <th>نام درمان</th>
+                        <th>تاریخ شروع</th>
+                        <th>نوع پرداخت</th>
+                        <th>مبلغ کل</th>
+                        <th>پیش پرداخت</th>
+                        <th>تعداد قسط</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var request in Model)
+                    {
+                        <tr class="text-center">
+                            <td>@request.Treatment?.TreatmentName</td>
+                            <td>@request.StartDate?.ToPersianDate()</td>
+                            <td>@request.PaymentType?.GetDisplayName()</td>
+                            <td class="text-center">@request.TotalAmount?.ToSeparatedNumber()</td>
+                            <td class="text-center">@request.Prepayment?.ToSeparatedNumber()</td>
+                            <td>@(request.PaymentType == PaymentTypes.Cash ? "نقدی" : request.InstallmentsCount.ToString())</td>
+                            <td>
+                                <a asp-area="PatientPanel" asp-controller="Treatments" asp-action="Installments" asp-route-requestId="@request.RequestId" class="btn btn-sm btn-gradient-green text-white">
+                                    مشاهده اقساط
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+﻿@using installments_Payment.Core.Extensions
+@model List<installments_Payment.DataAccessLayer.Entities.Inventories.Order>
+
+@{
+    ViewData["Title"] = "لیست سفارشات";
+}
+
+<div class="container">
+    <a asp-controller="Requirements" asp-action="OrderRequest" class="bg-gradient-to-r from-green-primary to-green-dark text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transitionn mb-3">
+        ثبت سفارش جدید
+    </a>
+    <hr class="mt-4" />
+    @if (Model.Any())
+    {
+        <div class="card mt-2">
+            <div class="card-body">
+                <table class="table table-bordered table-striped shadow">
+                    <thead class="table-success">
+                        <tr class="text-center">
+                            <th>شماره سفارش</th>
+                            <th>تاریخ ایجاد</th>
+                            <th>تعداد کل</th>
+                            <th>وضعیت</th>
+                            <th>دریافت فایل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr class="text-center">
+                                <td>@order.OrderId</td>
+                                <td>@order.CreatedAt.ToPersianDate()</td>
+                                <td>@order.Quantity</td>
+                                <td>
+                                    @if(order.CheckByManager == false)
+                                    {
+                                        <button disabled class="alert small rounded-2 mb-0 btn-gradient-red w-100">مدیر این مورد را چک نکرده</button>
+                                    }
+
+                                    else
+                                    {
+                                        <button disabled class="alert small rounded-2 mb-0 btn-gradient-green w-100">مدیر این مورد را چک کرده</button>
+                                    }
+
+                                </td>
+                                <td>
+                                    <a asp-action="DownloadOrderPdf" asp-controller="Requirements" asp-route-id="@order.OrderId" class="btn btn-sm btn-gradient-purple w-100 text-white">
+                                        دانلود PDF
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    }
+
+    else
+    {
+
+        <div class="alert btn-gradient-yellow text-center text-black-50 rounded-2 mt-3">
+            سفارشی برای نمایش وجود ندارد
+        </div>
+    }
+</div>

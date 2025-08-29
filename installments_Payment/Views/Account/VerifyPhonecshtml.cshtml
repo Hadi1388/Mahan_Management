@@ -1,0 +1,46 @@
+﻿@using installments_Payment.Core.ViewModels.Authentication
+@model VerifyPhoneViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "تأیید شماره تلفن";
+}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        /* استایل ها مثل قبل */
+        /* ... */
+    </style>
+</head>
+
+<body>
+    <div class="verify-container">
+        <h2 class="verify-title">@ViewData["Title"]</h2>
+        <p class="verify-info">کد تأیید به شماره <strong>@Model.Phone</strong> ارسال شد. لطفاً کد را وارد کنید:</p>
+
+        <form asp-action="VerifyPhone" method="post" novalidate>
+            <input asp-for="Phone" type="hidden" />
+
+            <div class="form-group">
+                <label asp-for="Code"></label>
+                <input asp-for="Code" class="form-control" maxlength="6" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+
+            <button type="submit">تأیید</button>
+        </form>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+
+</html>

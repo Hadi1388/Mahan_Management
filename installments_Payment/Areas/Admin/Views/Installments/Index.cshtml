@@ -1,0 +1,76 @@
+﻿@using installments_Payment.Core.Extensions
+@using installments_Payment.Core.ViewModels.Installment
+@model List<InstallmentViewModel>
+
+@{
+    ViewData["Title"] = "اقساط درخواست";
+    var requestId = ViewBag.RequestId;
+}
+
+<h4>اقساط درخواست @ViewBag.PatientName به شماره @requestId</h4>
+
+<div class="table-responsive mt-3">
+    <table class="table table-bordered table-striped table-sm text-center align-middle">
+        <thead class="table-success">
+            <tr>
+                <th>ردیف</th>
+                <th>مبلغ</th>
+                <th>مبلغ با جریمه</th>
+                <th>تاریخ سر رسید</th>
+                <th>وضعیت پرداخت</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                int index = 1;
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@item.Amount?.ToSeparatedNumber()</td>
+                        <td>
+                            @if (item.AmountWithPenalty > item.Amount)
+                            {
+                                <span class="text-danger fw-bold">@item.AmountWithPenalty?.ToSeparatedNumber()</span>
+                            }
+                            else
+                            {
+                                <p class="text-success">
+                                    جریمه شامل نمیشود
+                                </p>
+                            }
+                        </td>
+                        <td>@item.DueDate?.ToPersianDate()</td>
+                        <td>
+                            @if (item.IsPaid)
+                            {
+                                <span class="btn btn-gradient-green text-white"><i class="fas fa-check"></i></span>
+                            }
+                            else
+                            {
+                                <span class="btn btn-gradient-red text-white"><i class="fas fa-close"></i></span>
+                            }
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5">هیچ قسطی برای این درخواست ثبت نشده است.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@* اگر بخواهیم ایجاد قسط جدید برای مدیر باشد *@
+@* 
+<div class="mt-3">
+    <a asp-action="Create" asp-route-requestId="@requestId" class="btn btn-primary">
+        ایجاد قسط جدید
+    </a>
+</div>
+*@

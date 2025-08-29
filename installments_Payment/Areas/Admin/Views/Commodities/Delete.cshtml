@@ -1,0 +1,21 @@
+﻿@model installments_Payment.DataAccessLayer.Entities.Inventories.Commodity
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3>اَز حذف کالای <span class="text-danger">'@Model.Name'</span> مطمئن هستید؟</h3>
+            <hr class="p-2 mt-2" />
+            <form asp-action="Delete">
+                <div class="d-flex justify-content-end">
+                    <input type="hidden" asp-for="CommodityId" />
+                    <input type="submit" value="بله" class="btn-gradient-red mx-1" />
+                    <a class="btn-gradient-gray" asp-action="Index">خیر</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

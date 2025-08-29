@@ -1,0 +1,21 @@
+﻿@model installments_Payment.DataAccessLayer.Entities.Treatments.Treatment
+
+@{
+    ViewData["Title"] = "حذف نام درمان";
+}
+
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3>اَز حذف نام درمان <span class="text-danger">'@Model.TreatmentName'</span> مطمئن هستید؟</h3>
+            <hr class="p-2 mt-2" />
+            <form asp-action="Delete">
+                <div class="d-flex justify-content-end">
+                    <input type="hidden" asp-for="TreatmentId" />
+                    <input type="submit" value="بله" class="btn-gradient-red mx-1" />
+                    <a class="btn-gradient-gray" asp-action="Index">خیر</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

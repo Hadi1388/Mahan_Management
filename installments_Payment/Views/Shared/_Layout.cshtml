@@ -1,0 +1,118 @@
+﻿@using installments_Payment.Core.Extensions;
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Extensions
+@using Microsoft.AspNetCore.Http.Features
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💊 داروخانه آنلاین پلاس | خرید دارو با تجویز پزشک</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Vazir:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/index-style.css" rel="stylesheet" />
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="glass-card sticky top-0 z-40 border-b">
+        <div class="container mx-auto px-4 py-3 md:py-4">
+            <div class="flex items-center justify-between flex-wrap gap-2 md:gap-4">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <div class="medical-gradient text-white p-3 rounded-full">
+                        <i class="fas fa-pills text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-bold text-gray-800">مـرکز درمان  ماهان</h1>
+                        <p class="text-xs md:text-sm text-gray-500">ثبت درخواست آنلاین 24 ساعته</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav id="mainNav" class="hidden md:flex items-center space-x-8 space-x-reverse">
+@*                     <a href="#" class="text-gray-700 hover:text-cyan-600 font-medium transition-colors">
+                        <i class="fas fa-home ml-2"></i>خانه
+                    </a>
+                    <a href="#products" class="text-gray-700 hover:text-cyan-600 font-medium transition-colors">
+                        <i class="fas fa-capsules ml-2"></i>محصولات
+                    </a>
+                    <a href="#prescription" class="text-gray-700 hover:text-cyan-600 font-medium transition-colors">
+                        <i class="fas fa-prescription ml-2"></i>تجویز آنلاین
+                    </a>
+                    <a href="#consultation" class="text-gray-700 hover:text-cyan-600 font-medium transition-colors">
+                        <i class="fas fa-user-md ml-2"></i>مشاوره
+                    </a> *@
+                </nav>
+
+                <!-- Header Actions -->
+                <div class="flex items-center space-x-2 sm:space-x-3 md:space-x-4 space-x-reverse">
+                    @if (Context.Session.GetInt32("UserId") != null)
+                    {
+                        <p class="mx-2" style="color: gray;">خوش آمدید، @Context.Session.GetString("FullName")</p>
+
+                        <a href="/PatientPanel/Dashboard/Index" class="medical-gradient text-white p-3 rounded-full hover:shadow-lg transition-all mx-2">
+                            <i class="fas fa-user-circle ml-2"></i>پروفایل
+                        </a>
+                    }
+
+                    else
+                    {
+                        <a href="/Account/Login" class="medical-gradient text-white p-3 rounded-full hover:shadow-lg transition-all mx-2">
+                            <i class="fas fa-sign-in-alt ml-2"></i>ورود
+                        </a>
+
+                        <a href="/Account/Register" class="medical-gradient text-white p-3 rounded-full hover:shadow-lg transition-all mx-2">
+                            <i class="fas fa-user-alt ml-2"></i>ثبت نام
+                        </a>
+                    }
+                    <!-- Mobile Menu Toggle -->
+                    <button id="mobileMenuBtn" class="md:hidden text-gray-700 p-2">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden mt-3 hidden border-t border-gray-100 pt-3">
+                <div class="space-y-2">
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-home ml-2"></i>خانه
+                    </a>
+                    <a href="#products" class="block py-2 px-4 text-gray-700 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-capsules ml-2"></i>محصولات
+                    </a>
+                    <a href="#prescription" class="block py-2 px-4 text-gray-700 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-prescription ml-2"></i>تجویز آنلاین
+                    </a>
+                    <a href="#consultation" class="block py-2 px-4 text-gray-700 hover:bg-gray-50 rounded-lg">
+                        <i class="fas fa-user-md ml-2"></i>مشاوره
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="bg-gray-900 text-white fixed-bottom">
+        <div class="container mx-auto px-4">
+        </div>
+        <div class="border-t border-gray-800 p-3 text-center">
+            <p class="text-gray-400">
+                تمام حقوق این سایت برای مـرکز درمانی ماهان محفوظ اَست
+            </p>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="d:\work projects\web site\installments_payment\installments_payment\installments_payment\wwwroot\js\index-script.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

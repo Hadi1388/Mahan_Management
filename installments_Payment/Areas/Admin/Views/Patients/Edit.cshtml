@@ -1,0 +1,95 @@
+﻿@model installments_Payment.DataAccessLayer.Entities.Users.Patient
+
+@{
+    ViewData["Title"] = "ویرایش بیمار";
+}
+
+<div class="container">
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
+            <form asp-action="Edit" enctype="multipart/form-data" novalidate>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="NationalCardImagePath" />
+
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label fw-bold"></label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PrimaryPhoneNumber" class="form-label fw-bold"></label>
+                    <input asp-for="PrimaryPhoneNumber" class="form-control" />
+                    <span asp-validation-for="PrimaryPhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SecondaryPhoneNumber" class="form-label fw-bold"></label>
+                    <input asp-for="SecondaryPhoneNumber" class="form-control" />
+                    <span asp-validation-for="SecondaryPhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NationalCode" class="form-label fw-bold"></label>
+                    <input asp-for="NationalCode" class="form-control" />
+                    <span asp-validation-for="NationalCode" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">تصویر کارت ملی</label>
+                    <input type="file" name="NationalCardImageFile" class="form-control" id="NationalCardImageFile" />
+
+                    @if (!string.IsNullOrEmpty(Model.NationalCardImagePath))
+                    {
+                        <img id="imgPreview" src="~/img/national-card/@Model.NationalCardImagePath" class="img-thumbnail mt-2" style="max-width: 150px;" />
+                    }
+                    else
+                    {
+                        <img id="imgPreview" class="img-thumbnail mt-2" style="max-width: 150px; display:none;" />
+                    }
+                </div>
+
+                @section Scripts {
+                    <script>
+                        document.getElementById('NationalCardImageFile').addEventListener('change', function (e) {
+                            const [file] = e.target.files;
+                            if (file) {
+                                const imgPreview = document.getElementById('imgPreview');
+                                imgPreview.style.display = 'block';
+                                imgPreview.src = URL.createObjectURL(file);
+                            }
+                        });
+                    </script>
+                }
+
+                <div class="mb-3">
+                    <label asp-for="Address" class="form-label fw-bold"></label>
+                    <textarea asp-for="Address" class="form-control"></textarea>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">رمز عبور فعلی</label>
+                    <input value="******" class="form-control" disabled />
+                </div>
+
+                <div class="form-check alert alert-success mb-3">
+                    <input asp-for="IsPhoneVerified" class="form-check-input mx-3" />
+                    <label class="form-check-label">شماره موبایل تایید شده؟</label>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-end mt-2">
+                    <button type="submit" class="btn-gradient-yellow text-dark mx-1">ذخیره</button>
+                    <a asp-action="Index" class="btn-gradient-gray">بازگشت</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+

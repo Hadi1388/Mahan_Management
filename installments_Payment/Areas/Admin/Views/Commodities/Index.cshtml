@@ -1,0 +1,90 @@
+﻿@model IEnumerable<installments_Payment.DataAccessLayer.Entities.Inventories.Commodity>
+
+@{
+    ViewData["Title"] = "لیست کالا ها";
+}
+
+<a class="bg-gradient-to-r from-green-primary to-green-dark text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transitionn" asp-action="Create">
+    افزودن کالای جدید
+</a>
+
+<hr class="mt-3" />
+<div class="card bg-secondary bg-opacity-25 rounded-5 mt-2">
+    <div class="card-body">
+        <div class="">
+            <input type="text" id="searchBox" class="form-control rounded-5" placeholder="جستجوی کالا..." />
+        </div>
+    </div>
+</div>
+<hr class="mt-2" />
+
+@if (!Model.Any())
+{
+    <div class="alert btn-gradient-yellow text-center text-black-50 rounded-2 mt-3">
+        کالایی برای نمایش وجود ندارد
+    </div>
+}
+
+else
+{
+    <div class="card mt-2">
+        <div class="card-body">
+            <table class="table table-bordered table-striped shadow mt-3">
+                <thead class="table-success">
+                    <tr>
+                        <th>
+                            نام کالا
+                        </th>
+                        <th>
+                            عملیات
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.CommodityId" class="text-warning">ویرایش</a> |
+                                <a asp-action="Details" asp-route-id="@item.CommodityId" class="text-primary">جزئیات</a> |
+                                <a asp-action="Delete" asp-route-id="@item.CommodityId" class="text-danger">حذف</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchBox = document.getElementById("searchBox");
+        const tableRows = document.querySelectorAll("table tbody tr");
+        const notFoundMessage = document.getElementById("notFoundMessage");
+
+        searchBox.addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            let found = false;
+
+            tableRows.forEach(row => {
+                const commodityName = row.cells[0].innerText.toLowerCase();
+                if (commodityName.includes(query)) {
+                    row.style.display = "";
+                    found = true;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            // نمایش یا مخفی کردن پیام
+            if (!found && query.length > 0) {
+                notFoundMessage.classList.remove("d-none");
+            } else {
+                notFoundMessage.classList.add("d-none");
+            }
+        });
+    });
+</script>

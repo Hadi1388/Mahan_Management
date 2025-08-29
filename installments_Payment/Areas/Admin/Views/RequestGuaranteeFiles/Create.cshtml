@@ -1,0 +1,39 @@
+﻿@using installments_Payment.Core.ViewModels.Request
+@model UploadMultipleGuaranteeFilesViewModel
+
+@{
+    ViewData["Title"] = "افزودن وثیقه جدید برای " + @Model.PatientFullName;
+}
+
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="RequestId" />
+
+                <div class="form-group mb-3">
+                    شماره وثیقه (شماره چک یا سفته)
+                    <input asp-for="GuaranteeNumber" class="form-control" />
+                    <span asp-validation-for="GuaranteeNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="File">فایل وثیقه (چک یا سفته)</label>
+                    <input asp-for="File" type="file" class="form-control" />
+                    <span asp-validation-for="File" class="text-danger"></span>
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-end mt-2">
+                    <button type="submit" class="bg-gradient-to-r from-green-primary to-green-dark text-white px-4 py-2 rounded-full font-medium hover:opacity-90 transitionn">ثبت وثیقه</button>
+                    <a asp-action="Index" asp-route-requestId="@ViewBag.RequestId" class="btn-gradient-gray ms-0 mx-1">بازگشت</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

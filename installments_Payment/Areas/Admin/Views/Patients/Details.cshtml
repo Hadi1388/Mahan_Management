@@ -1,0 +1,92 @@
+﻿@model installments_Payment.DataAccessLayer.Entities.Users.Patient
+@using installments_Payment.Core.Extensions
+
+@{
+    ViewData["Title"] = "جزئیات بیمار";
+}
+
+<div class="container">
+    <div class="card shadow-sm border-0 p-2">
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <th>نام کامل</th>
+                        <td>@Model.FullName</td>
+                    </tr>
+                    <tr>
+                        <th>شماره تلفن اصلی</th>
+                        <td>@Model.PrimaryPhoneNumber</td>
+                    </tr>
+                    <tr>
+                        <th>شماره تلفن دوم</th>
+                        <td>@Model.SecondaryPhoneNumber</td>
+                    </tr>
+                    <tr>
+                        <th>کد ملی</th>
+                        <td>@Model.NationalCode</td>
+                    </tr>
+@*                     <tr>
+                        <th>چک / سفته</th>
+                        <td>
+                            @if (!string.IsNullOrEmpty(Model.CheckOrPromissoryNoteImagePath))
+                            {
+                                <img src="~/img/checks/@Model.CheckOrPromissoryNoteImagePath" alt="تصویر چک" class="img-thumbnail" style="max-width: 200px;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">تصویری ثبت نشده</span>
+                            }
+                        </td>
+                    </tr> *@
+                    <tr>
+                        <th>تصویر کارت ملی</th>
+                        <td>
+                            @if (!string.IsNullOrEmpty(Model.NationalCardImagePath))
+                            {
+                                <img src="~/img/national-card/@Model.NationalCardImagePath" alt="کارت ملی" class="img-thumbnail" style="max-width: 200px;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">تصویری ثبت نشده</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>آدرس</th>
+                        <td>@Model.Address</td>
+                    </tr>
+                    <tr>
+                        <th>تأیید شماره</th>
+                        <td>@(Model.IsPhoneVerified ? "بله" : "خیر")</td>
+                    </tr>
+                    <tr>
+                        <th>تاریخ ایجاد</th>
+                        <td>@Model.CreatedAt.ToPersianDate()</td>
+                    </tr>
+                    <tr>
+                        <th>آخرین ویرایش</th>
+                        <td>@Model.UpdatedAt.ToPersianDate()</td>
+                    </tr>
+                    <tr>
+                        <th>آخرین ورود</th>
+                        @if(Model.LastLoginAt != null)
+                        {
+                            <td>@Model.LastLoginAt?.ToPersianDate()</td>
+                        }
+
+                        else
+                        {
+                            <td>اطلاعاتی موجود نیست</td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr class="py-2" />
+        <div class="d-flex justify-content-end mx-3">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-gradient-yellow text-dark mx-1">ویرایش</a>
+            <a asp-action="Index" class="btn-gradient-gray">بازگشت</a>
+        </div>
+    </div>
+</div>
