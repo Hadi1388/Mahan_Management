@@ -1,8 +1,11 @@
 {
   "app": "mahan-management",
-  "port": 3000,
+  "port": 80,
   "build": {
     "location": "iran"
+  },
+  "dotnet": {
+    "version": "9.0"
   },
   "disks": []
 }
